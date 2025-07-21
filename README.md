@@ -29,9 +29,6 @@ pip --version
 ```
 
 
-<img width="1191" height="134" alt="Captura de pantalla 2025-07-20 230414" src="https://github.com/user-attachments/assets/ae645f88-1b62-48db-a213-7fdf9cb9059d" />
-
-
 If installed correctly, both commands will return their respective versions. Once confirmed, you may proceed.
 
 This project uses a virtual environment. It is important to create it first, as all dependencies will be installed there. You can create the environment using the following command:
@@ -61,7 +58,7 @@ pip install rlextra -i https://www.reportlab.com/pypi/
 You’ll be prompted to enter your username and password, after which the download will begin.
 
 # Class diagram
-<img width="1329" height="3840" alt="Mermaid_Chart_-_Create_complex_visual_diagrams_with_text _A_smarter_way_of_creating_diagrams -2025-07-20-171544" src="https://github.com/user-attachments/assets/7d83d3de-85d4-4e4d-9a86-eaba15801c0a" />
+<img width="2826" height="3834" alt="Mermaid_Chart_-_Create_complex_visual_diagrams_with_text _A_smarter_way_of_creating_diagrams -2025-07-21-161010" src="https://github.com/user-attachments/assets/e1d1bec7-fa47-4df4-965d-9a783bf3236e" />
 
 
 # Code Definition and Explanation
