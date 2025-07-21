@@ -187,7 +187,7 @@ ventas_registradas = []
 - Loads existing inventory
 - Starts an empty list to track sales in memory
 
-La GUI está construida de la siguiente manera:
+The GUI is constructed in the following way:
 
 ```python
 ventana = tk.Tk()
