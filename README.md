@@ -2,7 +2,7 @@
 
 Build an application that simulates an inventory management system for a warehouse.
 
-(We've made 2 versions of repositorys, one in english and another one in spanish)
+(We've made 2 versions of repositorys, one in english and another one in spanish, here's the link of the spanish one: https://github.com/dsanchezza/Proyecto)
 
 Team Members:
 
