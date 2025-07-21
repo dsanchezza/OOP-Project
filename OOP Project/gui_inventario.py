@@ -2,6 +2,7 @@ import tkinter as tk
 from tkinter import messagebox
 from clases import Proveedor, Producto, Inventario, Venta
 import datetime
+import sqlite3
 
 def iniciar_gui(inventario):
     inventario.crear_base_datos()
@@ -46,12 +47,22 @@ def iniciar_gui(inventario):
             producto.cantidad -= cantidad
             venta.guardar_venta()
             ventas_registradas.append(venta)
-            # nombre_pdf = f"comprobante_venta_{len(ventas_registradas)}.pdf"
-            # venta.generar_pdf(nombre_pdf)
             inventario.guardar_inventario()
             messagebox.showinfo("Venta registrada", f"Venta registrada")
         except Exception as e:
             messagebox.showerror("Error", str(e))
+
+    def ver_inventario():
+        conection = sqlite3.connect("inventario.db")
+        cursor = conection.cursor()
+        cursor.execute("SELECT nombre, cantidad FROM productos")
+        inventario = cursor.fetchall()
+        conection.close()
+
+        ventana_inventario = tk.Toplevel()
+        ventana_inventario.title("Inventario actual")
+        for nombre, cantidad in inventario:
+            tk.Label(ventana_inventario, text=f"{nombre}: {cantidad} unidades").pack()
 
     def filtrar_ventas_por_fecha():
         try:
@@ -103,12 +114,11 @@ def iniciar_gui(inventario):
 
         messagebox.showinfo("Ranking de stock", mensaje)
 
-    # --- GUI ---
     ventana = tk.Tk()
     ventana.title("Sistema de Inventario de Partes de Autos")
     ventana.geometry("600x750")
 
-    tk.Label(ventana, text="Agregar Producto al Inventario", font=("Arial", 14, "bold")).pack(pady=10)
+    tk.Label(ventana, text="Agregar Producto al Inventario", font=("Arial", 14, "bold")).pack(pady=5)
     tk.Label(ventana, text="ID del producto:").pack()
     entry_id = tk.Entry(ventana)
     entry_id.pack()
@@ -130,18 +140,18 @@ def iniciar_gui(inventario):
     tk.Label(ventana, text="Precio unitario:").pack()
     entry_precio = tk.Entry(ventana)
     entry_precio.pack()
-    tk.Button(ventana, text="Agregar Producto", command=agregar_producto).pack(pady=10)
+    tk.Button(ventana, text="Agregar Producto", command=agregar_producto).pack(pady=5)
 
-    tk.Label(ventana, text="Registrar Venta", font=("Arial", 14, "bold")).pack(pady=10)
+    tk.Label(ventana, text="Registrar Venta", font=("Arial", 14, "bold")).pack(pady=5)
     tk.Label(ventana, text="ID del producto a vender:").pack()
     entry_id_venta = tk.Entry(ventana)
     entry_id_venta.pack()
     tk.Label(ventana, text="Cantidad a vender:").pack()
     entry_cantidad_venta = tk.Entry(ventana)
     entry_cantidad_venta.pack()
-    tk.Button(ventana, text="Registrar Venta", command=registrar_venta).pack(pady=10)
-    tk.Button(ventana, text="Generar comprobante general", command=generar_comprobante_general).pack(pady=10)
-    tk.Label(ventana, text="Ver ventas por rango de fechas", font=("Arial", 14, "bold")).pack(pady=10)
+    tk.Button(ventana, text="Registrar Venta", command=registrar_venta).pack(pady=5)
+    tk.Button(ventana, text="Generar comprobante general", command=generar_comprobante_general).pack(pady=5)
+    tk.Label(ventana, text="Ver ventas por rango de fechas", font=("Arial", 14, "bold")).pack(pady=5)
 
     tk.Label(ventana, text="Fecha inicio (YYYY-MM-DD):").pack()
     entry_fecha_inicio = tk.Entry(ventana)
@@ -150,6 +160,14 @@ def iniciar_gui(inventario):
     tk.Label(ventana, text="Fecha fin (YYYY-MM-DD):").pack()
     entry_fecha_fin = tk.Entry(ventana)
     entry_fecha_fin.pack()
+
+    tk.Button(ventana, text="Filtrar ventas por fecha", command=filtrar_ventas_por_fecha).pack(pady=5)
+
+    tk.Button(ventana, text="Ver inventario", command=ver_inventario).pack(pady=5)
+
+    tk.Button(ventana, text="Mostrar ranking de stock", command=mostrar_ranking_stock).pack(pady=5)
+
+    ventana.mainloop()
 
     tk.Button(ventana, text="Filtrar ventas por fecha", command=filtrar_ventas_por_fecha).pack(pady=5)
     tk.Button(ventana, text="Mostrar ranking de stock", command=mostrar_ranking_stock).pack(pady=5)
