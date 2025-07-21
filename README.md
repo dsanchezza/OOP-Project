@@ -2,6 +2,8 @@
 
 Build an application that simulates an inventory management system for a warehouse.
 
+(We've made 2 versions of repositorys, one in english and another one in spanish)
+
 Team Members:
 
 - Danna Gabriela Sánchez Zambrano
@@ -21,53 +23,54 @@ This inventory system allows you to:
 
 Before starting with the visualization and explanation of the project, it's important to have all requirements properly installed. To verify this, run the following commands in the Windows terminal:
 
-python
+```python
 python --version
 pip --version
-
+```
 
 
 <img width="1191" height="134" alt="Captura de pantalla 2025-07-20 230414" src="https://github.com/user-attachments/assets/ae645f88-1b62-48db-a213-7fdf9cb9059d" />
 
 
-Si está correctamente instalado, ambos comandos devolverán la versión, así podemos continuar al siguiente paso
+If installed correctly, both commands will return their respective versions. Once confirmed, you may proceed.
 
-En este proyecto se hace uso de un entorno virtual, al crear la carpeta es importante que esto sea lo primero que se haga puesto que las dependencias del proyecto se instalarán en el entorno virtual, el cual se puede crear con el siguiente comando en la terminal:
+This project uses a virtual environment. It is important to create it first, as all dependencies will be installed there. You can create the environment using the following command:
 
-python
+```python
 python -m venv venv
-#Aún falta activar el entorno virtual para que empiece a funcionar, este se activará usando el siguiente comando
+#Then activate the virtual environment using the command below:
 venv\Scripts\activate
+```
 
+Since this project uses external libraries, they must be installed with:
 
-Puesto que en este proyecto se hace uso de diferentes librerías externas, también se instalarán en la terminal usando el siguiente comando
-
-python
+```python
 pip install pandas openpyxl matplotlib
+```
 
+However, one additional library requires account registration.
+To install it, you must create an account at: https://www.reportlab.com/accounts/register/
+(Make sure to check your username, as it will be required during installation)
 
-Sin embargo, aún falta una librería, la cual para instalarse es necesario crear una cuenta en la página web de esta misma
-- Link para registrarse (es importante consultar su nombre de usuario antes de continuar ya que este se pide durante la instalación) https://www.reportlab.com/accounts/register/
+To install the package, run:
 
-Finalmente, para la instalación de este programa se utilizará el siguiente comando en la terminal
-
-python
+```python
 pip install rlextra -i https://www.reportlab.com/pypi/
+```
 
+You’ll be prompted to enter your username and password, after which the download will begin.
 
-Se solicitará el nombre de usuario y la contraseña que se introdujo cuando se creó la cuenta, posteriormente iniciará la descarga
-
-# Diagrama de clases
+# Class diagram
 <img width="1329" height="3840" alt="Mermaid_Chart_-_Create_complex_visual_diagrams_with_text _A_smarter_way_of_creating_diagrams -2025-07-20-171544" src="https://github.com/user-attachments/assets/7d83d3de-85d4-4e4d-9a86-eaba15801c0a" />
 
 
-# Definición y explicación de código
+# Code Definition and Explanation
 
-En nuestro archivo clases.py se encuentra toda la información de las clases del sistema de inventario
+In the clases.py file, you’ll find all the class definitions for the inventory system
 
-**Clase proveedor**
+**Class proveedor (or supplier in english but in code terms we'll use the original names in spanish)**
 
-python
+```python
 class Proveedor:
     def __init__(self, id: int, nombre, telefono: int, direccion, email):
         self.id = id
@@ -78,11 +81,11 @@ class Proveedor:
 
     def informacion_proveedor(self):
         return f"{self.nombre} ({self.telefono})"
-
-La clase proveedor guarda información tal como ID, nombre del proveedor, teléfono, dirección y correo electronico, adicionalmente, tiene un metodo informacion_proveedor el cual retirna el nombre y teléfono del proveedor.
+```
+This class stores the supplier's ID, name, phone number, address, and email. It also includes a method `informacion_proveedor` which returns the name and phone number.
 
 **Clase producto**
-python
+```python
 class Producto:
     def __init__(self, id: int, nombre, descripcion, marca, modelo, proveedor: Proveedor, fecha_compra: datetime, cantidad, precio_unitario):
         self.id = id
@@ -105,28 +108,27 @@ class Producto:
 
     def informacion_producto(self):
         return f"{self.nombre} - {self.marca} {self.modelo} ({self.cantidad} unidades)"
+```
 
+This class represents each product in the inventory, storing attributes like ID, name, description, brand, model, purchase date, quantity, and unit price. The supplier is an instance of the Proveedor class. `sumar_stock` increases the stock while `reducir_stock` decreases the stock __only if there is enough inventory.__ `informacion_producto` returns a string summarizing product info.
 
-Esta clase representa cada producto que se maneja en el inventario como ID, nombre, descripción, marca, modelo, fecha de compra, cantidad y precio unitario; proveedor es una instancia de la clase Proveedor. En cuanto a los metodos, sumar_stock suma una cantidad al stock actual del producto, mientras que reducir_stock le resta unidades al stock actual __solo si hay suficiente,__ si no hay inventario suficiente, no hace nada. informacion_producto devuelve un string con el nombre, marca, modelo y cantidad de un producto en inventario
+**Class inventario**
 
-**Clase inventario**
+This is the core of the system, managing the product list and the SQLite database.
 
-La clase inventario es el núcleo del sistema de gestión de productos, puesto que maneja la lista de productos y la base de datos SQLite
-
-
-python
+```python
 def crear_base_datos(self):
+```
 
+Creates the necessary tables in the database if they don’t already exist.
 
-Este metodo crea las tablas necesarias en la base de datos SQLite si no existen,  lo cual permite inicializar la estructura para guardar la información de productos, ventas y proveedores.
-
-python
+```python
 def guardar_inventario(self):
+```
 
+Saves the products to the productos table and keeps the database up to date..
 
-Guarda los productos dentro de la tabla productos de la base de datos y está constantemente actualizando la base de datos.
-
-python
+```python
 def hacer_backup(self):
         if not os.path.exists("backups"):
             os.makedirs("backups")
@@ -135,97 +137,99 @@ def hacer_backup(self):
             shutil.copy(self.nombre_base_datos, f"backups/inventario_backup_{fecha}.db")
         except FileNotFoundError:
             pass
+```
 
-
-Crea una copia de seguridad del archivo inventario.db dentro de una carpeta llamada backups
-
-python
+creates a backup of the inventario.db file in a folder named `backups`.
+`
+```python
     def cargar_inventario_desde_sql(self):
+```
 
+Loads products from the database when the app starts..
 
-Lee los productos almacenados en la base de datos y los carga al iniciar la aplicación para que estén disponibles.
+**Class venta**
 
-**Clase venta**
+This class manages transactions and sales, storing detailed sale information and allowing database registration via PDF receipts.
 
-Esta clase representa el sistema de transacciones de ventas en el sistema de inventario, almacenando la información detallada sobre la venta y adicionalmente permite generar registros en la base de datos por medio de comprobantes en pdf.
-
-python
+```python
 def generar_pdf(self, nombre_archivo, ventas_acumuladas=[]):
+```
 
+This method generates a general PDF receipt with:
+- Sale details
+- A bar chart summarizing the most sold products
 
-Este método genera un comprobante general en pdf que incluye:
-- Detalles individuales de cada venta
-- Un gráfico de barras con el resumen de los productos más vendidos.
-
-Para el gráfico se hace uso de la librería matplotlib que fue instalada previamente, y para el pdf se usa reportlab que crea un pdf de tamaño A4
+`matplotlib` is used for the chart, and `reportlab` is used to generate the A4-sized PDF.
 
 # gui_inventario.py
 
-python
+```python
 import tkinter as tk
 from tkinter import messagebox
 from clases import Proveedor, Producto, Inventario, Venta
 import datetime
+```
 
+- `tkinter` is used for the GUI
+- `messagebox` shows messages in the screen
+- The imported classes are from `clases.py`
+- `datetime` manages date fields for purchases and sales
 
-En cuanto a las importaciones, contamos con 4. tkinter crea la GUI, messagebox muestra mensajes al usuario, la importación de clases trae las clases definidas anteriormente en clases.py, en cuanto a datetime esta sirve para registrar fechas de compra y venta. 
+The `iniciar_gui` function defines all interactive functionalities in the main window.
 
-
-En cuanto a la función principal iniciar_gui esta define todas las funcionalidades internas que se pueden realizar desde la ventana
-
-python
+```python
 inventario.crear_base_datos()
 inventario.cargar_inventario_desde_sql()
 ventas_registradas = []
+```
 
-
-- Se crea la base de datos si no existe
-- Se cargan productos existentes desde SQLite
-- Se inicia una lista vacia para registrar ventas en memoria
+- Initializes the database
+- Loads existing inventory
+- Starts an empty list to track sales in memory
 
 La GUI está construida de la siguiente manera:
 
-python
+```python
 ventana = tk.Tk()
 ventana.title("Sistema de Inventario de Partes de Autos")
 ventana.geometry("600x750")
+```
+- tk.Tk: Creates the main window
+- title: Creates window's name
+- geometry: Creates window's size
 
-- tk.Tk: Crea la ventana principal
-- title: Define el nombre de la ventana
-- geometry: Define el tamaño de la ventana
+Then, labels and input fields are created to enter product attributes, like this:
 
-Se crea un titulo, y posteriormente se crean los campos para introducir los atributos del producto:
-
-python
+```python
 tk.Label(ventana, text="ID del producto:").pack()
 entry_id = tk.Entry(ventana)
 entry_id.pack()
+```
 
+The same applies to the rest of the code where information needs to be entered.
 
-Esto se repite con el resto del código en donde se necesite introducir información.
+Finally, a button is added to insert the product:
 
-Finalmente un botón para añadir el producto
-
-python
+```python
 tk.Button(ventana, text="Agregar Producto", command=agregar_producto).pack(pady=10)
-
+```
 
 # Cargar_desde_excel.py
 
-python
+```python
 import sqlite3
 import pandas as pd
+```
 
+Starting with the librarys, we import sqlite3 which allows database access, and pandas which reads the Excel file.
 
-Empezando con las librerías, se importa sqlite3 para conectarse y ejecutar comandos en la base de datos SQLite, y pandas para leer y manejar el archivo excel.
-
-python
+```python
 df = pd.read_excel("productos.xlsx", engine='openpyxl')
+```
+Reads the `productos.xlsx file.` openpyxl is required for .xlsx files.
 
-Aquí se lee el archivo productos.xlsx, el siguiente método se usa obligatoriamente en todos los archivos .xlsx
 
-
-python
+```python
 productos = [
     (
         int(row["id"]),
@@ -240,37 +244,37 @@ productos = [
     )
     for _, row in df.iterrows()
 ]
+```
 
+Then, each row is processed using `iterrows` and converted into a tuple with their values (int, float, str, etc)
 
-Se recorre cada fila haciendo uso de iterrows y cada fila se convierte en una tupla que convierte los valores en sus tipos correspondientes (int, float, str, etc)
-
-python
+```python
 cursor.executemany('''
     INSERT INTO producto (
         id, nombre, descripcion, marca, modelo,
         proveedor_id, fecha_compra, cantidad, precio_unitario
     ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)
 ''', productos)
+```
 
-
-Se insertan las tuplas en la tabla producto y se insertan los datos en la tabla
+Finally, they are inserted into the producto table
 
 # Main.py
 
-Finalmente, desde el archivo main.py ocurre toda la ejecución del programa y allí será donde se use
+This file is where the full program execution begins:
 
-python
+```python
 def main():
     inventario = Inventario()
+```
 
+Creates an instance of the Inventario class.
 
-Crea una instancia del inventario para gestionar productos y ventas en la base de datos
-
-python
+```python
 if __name__ == "__main__":
     main()
+```
 
+This is a Python convention that ensures the file runs only when executed directly.
 
-Este archivo es una convención de python para que el archivo se ejecute directamente desde main.py
-
-(Para una mejor visualización del programa se recomienda instalar una extensión desde vscode de lector y visualizador de archivos PDF y .xlsx, esto se hace para poder visualizar los archivos desde vscode y no tener que ir hasta la carpeta de origen para verlos)
+(For better project visualization, it's recommended to install a PDF and Excel viewer extension in VSCode. This allows you to open files directly within the editor instead of browsing through folders.)
